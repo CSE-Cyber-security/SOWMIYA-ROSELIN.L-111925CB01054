@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Snake & Ladder Game</title>
+<style>
+/* --- SLIDE STYLES --- */
+.slide {
+  width: 100%;
+  height: 100vh;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: Arial;
+}
+
+.active {
+  display: flex;
+}
+
+/* BUTTON */
+.btn {
+  padding: 12px 25px;
+  background: #000;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+/* GAME BOARD */
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(10, 40px);
+  gap: 2px;
+  margin-top: 20px;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  background: #f2f2f2;
+  border: 1px solid #999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.player {
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+}
+
+/* Title */
+h1 {
+  font-size: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Slide 1 -->
+<div id="slide1" class="slide active">
+  <h1>Snake & Ladder</h1>
+  <button class="btn" onclick="nextSlide(2)">Start Game</button>
+</div>
+
+<!-- Slide 2 -->
+<div id="slide2" class="slide">
+  <h2>Instructions</h2>
+  <p>Roll the dice → Move → Beware of snakes → Climb ladders → Reach 100 to win!</p>
+  <button class="btn" onclick="nextSlide(3)">Play Now</button>
+</div>
+
+<!-- Slide 3 -->
+<div id="slide3" class="slide">
+  <h2>Snake & Ladder Board</h2>
+
+  <div id="board" class="board"></div>
+
+  <button class="btn" onclick="rollDice()">Roll Dice</button>
+  <p id="status"></p>
+</div>
+
+<script>
+// Slide changer
+function nextSlide(n) {
+  document.querySelectorAll(".slide").forEach(s => s.classList.remove("active"));
+  document.getElementById("slide" + n).classList.add("active");
+}
+
+// Create board cells
+let board = document.getElementById("board");
+let position = 1;
+
+for (let i = 100; i >= 1; i--) {
+  let cell = document.createElement("div");
+  cell.className = "cell";
+  cell.id = "cell" + i;
+  cell.innerHTML = i;
+  board.appendChild(cell);
+}
+
+// Snakes & Ladders
+let jumps = {
+  4: 14,
+  9: 31,
+  17: 7,
+  20: 38,
+  28: 84,
+  40: 59,
+  51: 67,
+  54: 34,
+  62: 19,
+  63: 81,
+  72: 91,
+  87: 24,
+  95: 75,
+  99: 78
+};
+
+function rollDice() {
+  let dice = Math.floor(Math.random() * 6) + 1;
+  position += dice;
+  if (position > 100) position = 100;
+
+  // Snake or Ladder
+  if (jumps[position]) {
+    position = jumps[position];
+  }
+
+  updatePlayer();
+}
+
+function updatePlayer() {
+  document.querySelectorAll(".player").forEach(p => p.remove());
+
+  let player = document.createElement("div");
+  player.className = "player";
+
+  document.getElementById("cell" + position).appendChild(player);
+
+  document.getElementById("status").innerText =
+    "Player Position: " + position;
+
+  if (position == 100) {
+    document.getElementById("status").innerText = "YOU WIN!";
+  }
+}
+</script>
+</body>
+</html>
